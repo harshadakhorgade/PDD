@@ -1,0 +1,61 @@
+{% extends 'base.html' %}  <!-- Extend the base.html template -->
+
+{% block title %}
+    {{ form.instance.id|yesno:"Edit Crop,Add Crop" }}
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ form.instance.id|yesno:"Edit Crop,Add Crop" }}</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">{{ form.instance.id|yesno:"Save Crop,Add Crop" }}</button>
+
+    </form>
+</div>
+
+<style>body {
+    background-color: #e0f7f5; /* Light green/teal background */
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+{% comment %} h2 {
+    font-weight: bold;
+    color: #333;
+} {% endcomment %}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #ccc;
+}
+
+.btn {
+    width: 20%; /* Full width button */
+    padding: 15px; /* Increased padding for a more prominent button */
+    background-color: #28a745; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 6px; /* Rounded corners */
+    font-size: 18px; /* Larger font size */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+.btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+</style>
+{% endblock content %}

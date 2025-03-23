@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Home{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <main class="main-content">
+        <!-- Header Section -->
+        <header class="header">
+            <h2>Good Morning, {{ user.username }}</h2>
+        </header>
+
+
+        <!-- Weather Section -->
+        <section class="weather-section">
+            <h3>Today's Weather</h3>
+            <div class="weather-info">
+                <div class="date-location">
+                    <p>15 August 2024</p>
+                    <p>Yavatmal, Maharashtra</p>
+                </div>
+                <div class="weather-data">
+                    <p class="temperature">29°C</p>
+                    <p class="humidity">Humidity: 83%</p>
+                    <p class="condition">Cloudy</p>
+                    <img src="{% static 'img/image 156.png' %}" alt="Cloudy"> <!-- Weather Icon -->
+                    <p class="advice">Today is a good day to apply pesticides.</p>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+        <!-- Crops Section -->
+        <section class="crops-section">
+            <h3>Your Crops</h3>
+            <div class="crops-grid">
+                <!-- Crop 1 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='onion' %}">
+                        <img src="{% static 'img/onion-icon.png' %}" alt="Onion">
+                        <p>Onion</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 2 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='chilli' %}">
+                        <img src="{% static 'img/chilli-icon.png' %}" alt="Chilli">
+                        <p>Chilli</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 3 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='turmeric' %}">
+                        <img src="{% static 'img/turmeric-icon.png' %}" alt="Turmeric">
+                        <p>Turmeric</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 4 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='cumin' %}">
+                        <img src="{% static 'img/cumin-icon.jpg' %}" alt="Cumin">
+                        <p>Cumin</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 5 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='garlic' %}">
+                        <img src="{% static 'img/garlic-icon.png' %}" alt="Garlic">
+                        <p>Garlic</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 6 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='chickoo' %}">
+                        <img src="{% static 'img/chikoo-icon.png' %}" alt="Chickoo">
+                        <p>Chickoo</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 7 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='spices' %}">
+                        <img src="{% static 'img/spices-icon.png' %}" alt="Spices">
+                        <p>Spices</p>
+                    </a>
+                </div>
+        
+                <!-- Crop 8 -->
+                <div class="crop card-effect">
+                    <a href="{% url 'base:crop_view' crop_name='cashew' %}">
+                        <img src="{% static 'img/cashew-icon.png' %}" alt="Cashew">
+                        <p>Cashew</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- Tools Section -->
+        <section class="tools-section">
+            <div class="tool">
+                <img src="{% static 'img/plant-disease-icon.jpg' %}" alt="Plant Disease Detection">
+                <p>Plant Disease Detection</p>
+            </div>
+            <div class="tool">
+                <img src="{% static 'img/fertilizer-icon.png' %}" alt="Fertilizer Calculator">
+                <p>Fertilizer Calculator</p>
+            </div>
+            <div class="tool">
+                <img src="{% static 'img/ph-checker-icon.png' %}" alt="pH Level Checker">
+                <p>pH Level Checker</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+{% endblock %}
