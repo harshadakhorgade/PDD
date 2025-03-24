@@ -12,12 +12,14 @@ def get_ssm_parameter(name, decrypt=True):
     return response["Parameter"]["Value"]
 
 # Fetch credentials securely from AWS SSM
-SECRET_KEY = get_ssm_parameter("/django/secret_key")
+
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "production.eba-aqqrgxjn.us-west-2.elasticbeanstalk.com",
+    ".elasticbeanstalk.com",  # Allows all AWS Elastic Beanstalk subdomains
 ]
+
 
 DATABASES = {
     'default': {
@@ -30,6 +32,7 @@ DATABASES = {
     }
 }
 
+WSGI_APPLICATION = "loginSignup.wsgi.application"
 
 
 # Fetch S3 bucket name from AWS SSM Parameter Store
