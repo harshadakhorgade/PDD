@@ -85,9 +85,14 @@
 
             
 
-            <button class="navbar-logout">
-                <a href="{% url 'base:logout' %}">Logout</a>
-            </button>
+                <form action="{% url 'base:logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background-color: #ff4d4d; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">
+                        Logout
+                    </button>
+                </form>
+                
+                
         </div>
     </nav>
     {% endif %}

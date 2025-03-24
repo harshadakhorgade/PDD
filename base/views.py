@@ -59,16 +59,15 @@ from .models import Notification, CoordinatorProfile, Profile ,CartItem # Import
 
 @login_required
 def home(request):
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile, created = Profile.objects.get_or_create(user=request.user)  # Ensures a profile exists
+
     if user_profile.user_type == 'Farmer':
-        # # Fetch notifications specifically for the logged-in farmer
-        # notifications = Notification.objects.filter(user=request.user)
-        # print("Notifications in context: ", notifications)  # Print for debugging
         return render(request, 'home.html')
 
     elif user_profile.user_type == 'Coordinator':
         return render(request, 'coordinator_dashboard.html')
 
+    return render(request, 'home.html')  # Default fallback
 
 #--------- ---------notifications ------------------->
 

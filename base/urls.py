@@ -7,6 +7,8 @@ from .forms import  MyPasswordChangeForm
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth.views import LogoutView
+
 # >>>>>>>>>>>>>>>
 
 app_name = 'base'
@@ -25,8 +27,8 @@ urlpatterns = [
     path('notification/delete/<int:notification_id>/', delete_notification, name='delete_notification'),
 
     path("signup/farmer/", views.farmer_signup, name="farmer_signup"),
-    # path('accounts/login/farmer/', views.farmer_login, name='farmer_login'),
-
+    path('accounts/login/farmer/', views.farmer_login, name='farmer_login'),
+    # path('accounts/logout/', LogoutView.as_view(), name='logout'),
     path('accounts/login/', views.farmer_login, name='login'),
     path("signup/coordinator", views.coordinator_signup, name="coordinator_signup"),
     path("accounts/", include("django.contrib.auth.urls")),
