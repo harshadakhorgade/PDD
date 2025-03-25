@@ -1,6 +1,7 @@
 
 from pathlib import Path
 
+ALLOWED_HOSTS = ["*"]
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-vp4_0=p!yqa=@j5kzo6_i^$s234vn2nean27ycdirw$r#*^bq)'
