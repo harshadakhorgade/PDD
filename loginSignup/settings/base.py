@@ -1,16 +1,29 @@
-
 from pathlib import Path
-
-ALLOWED_HOSTS = ["*"]
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vp4_0=p!yqa=@j5kzo6_i^$s234vn2nean27ycdirw$r#*^bq)'
-
 import os
+import boto3
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Common Django settings
+# Initialize AWS SSM client
+ssm = boto3.client("ssm", region_name="us-west-2")
+
+# Function to get parameters from AWS SSM
+def get_ssm_parameter(name, decrypt=True):
+    """Fetch parameter from AWS SSM Parameter Store."""
+    try:
+        response = ssm.get_parameter(Name=name, WithDecryption=decrypt)
+        return response["Parameter"]["Value"]
+    except Exception as e:
+        print(f"Warning: Could not retrieve {name} from SSM. Using fallback. Error: {e}")
+        return os.getenv("SECRET_KEY", "fallback-secret-key")
+
+# Fetch SECRET_KEY
+SECRET_KEY = get_ssm_parameter("/django/secret_key")
+
+# Allowed Hosts
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "yourdomain.com,.elasticbeanstalk.com").split(",")
+
+# Installed Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -21,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'base',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -59,24 +73,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# # Static and Media Files
-# STATIC_URL = '/static/'
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
-
-# # Default Auto Field
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Static and Media Files
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Authentication
-# LOGIN_REDIRECT_URL = 'base:home'
-# LOGOUT_REDIRECT_URL = 'base:login'
-LOGOUT_REDIRECT_URL = 'base:login'  # Redirect after logout
-LOGOUT_VIEW = 'django.contrib.auth.views.LogoutView'
+LOGIN_REDIRECT_URL = 'base:home'
+LOGOUT_REDIRECT_URL = 'base:login'
 
-
-# # REST Framework
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-# }
+# REST Framework Authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

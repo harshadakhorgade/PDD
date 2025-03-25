@@ -1,66 +1,49 @@
 from .base import *
 import boto3
-import json
+import os
 
 DEBUG = False
 
-# AWS SSM Parameter Store
-ssm = boto3.client("ssm", region_name="your-region")
+# AWS SSM Parameter Store Setup
+ssm = boto3.client("ssm", region_name="us-west-2")
 
 def get_ssm_parameter(name, decrypt=True):
-    response = ssm.get_parameter(Name=name, WithDecryption=decrypt)
-    return response["Parameter"]["Value"]
+    """Fetch parameter from AWS SSM Parameter Store with fallback."""
+    try:
+        response = ssm.get_parameter(Name=name, WithDecryption=decrypt)
+        return response["Parameter"]["Value"]
+    except Exception as e:
+        print(f"Warning: Could not retrieve {name} from SSM. Using fallback. Error: {e}")
+        return os.getenv(name.replace("/", "_").upper(), "fallback-value")
 
-# Fetch credentials securely from AWS SSM
+# Set SECRET_KEY
+SECRET_KEY = get_ssm_parameter("/django/secret_key") or os.getenv("SECRET_KEY", "fallback-secret-key")
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "production.eba-aqqrgxjn.us-west-2.elasticbeanstalk.com",
-    ".elasticbeanstalk.com",  # Allows all AWS Elastic Beanstalk subdomains
-]
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': get_ssm_parameter("/django/db/name"),
-        'USER': get_ssm_parameter("/django/db/user"),
-        'PASSWORD': get_ssm_parameter("/django/db/password"),
-        'HOST': get_ssm_parameter("/django/db/host"),
-        'PORT': get_ssm_parameter("/django/db/port"),
-    }
-}
+# Allowed Hosts
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,production.eba-vp5tfvub.us-west-2.elasticbeanstalk.com,.elasticbeanstalk.com").split(",")
 
 WSGI_APPLICATION = "loginSignup.wsgi.application"
 
+# AWS S3 Storage Configuration
+AWS_STORAGE_BUCKET_NAME = get_ssm_parameter("/django/s3_bucket_name") or os.getenv("AWS_STORAGE_BUCKET_NAME", "")
+AWS_S3_REGION_NAME = "us-west-2"
 
-# Fetch S3 bucket name from AWS SSM Parameter Store
-AWS_STORAGE_BUCKET_NAME = get_ssm_parameter("/django/s3_bucket_name")
-AWS_S3_REGION_NAME = "your-region"  # e.g., "us-east-1"
+if AWS_STORAGE_BUCKET_NAME:
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+else:
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+    MEDIA_ROOT = BASE_DIR / "media"
 
-# S3 Custom Domain
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-
-# Use S3 for Django static and media files
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-# Define media and static URLs
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-
-# Configure S3 settings
-AWS_QUERYSTRING_AUTH = False  # Removes authentication from URL
-AWS_S3_FILE_OVERWRITE = False  # Prevents file overwriting
-
-
-# Security settings
+# Security Settings
 SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-
-
