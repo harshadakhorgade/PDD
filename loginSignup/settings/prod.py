@@ -33,7 +33,7 @@ def get_ssm_parameter(name, decrypt=True):
 SECRET_KEY = get_ssm_parameter("/django/secret_key") or os.getenv("SECRET_KEY", "fallback-secret-key")
 
 # Allowed Hosts
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,production.eba-vp5tfvub.us-west-2.elasticbeanstalk.com,.elasticbeanstalk.com").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,production.eba-2yfcmnuj.us-west-2.elasticbeanstalk.com,.elasticbeanstalk.com").split(",")
 
 WSGI_APPLICATION = "loginSignup.wsgi.application"
 
