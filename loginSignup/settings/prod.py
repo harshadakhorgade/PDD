@@ -4,6 +4,19 @@ import os
 
 DEBUG = False
 
+
+DATABASES = {}
+class DisableMigrations:
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return None
+
+MIGRATION_MODULES = DisableMigrations()
+
+
+
 # AWS SSM Parameter Store Setup
 ssm = boto3.client("ssm", region_name="us-west-2")
 
