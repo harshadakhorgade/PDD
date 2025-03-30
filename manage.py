@@ -7,9 +7,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'loginSignup.settings.dev')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'loginSignup.settings.prod')
     try:
-        from loginSignup.settings.dev import BASE_DIR
+        from loginSignup.settings.prod import BASE_DIR
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(

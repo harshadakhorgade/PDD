@@ -2,6 +2,9 @@ from .base import *
 import os
 import boto3
 from botocore.exceptions import ClientError
+# Allowed Hosts
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'your-eb-domain.elasticbeanstalk.com,production.eba-e54mw4d2.us-west-2.elasticbeanstalk.com').split(',')
+
 
 DEBUG = False
 
@@ -13,6 +16,22 @@ def get_ssm_parameter(name):
         return response['Parameter']['Value']
     except ClientError as e:
         raise Exception(f"Error retrieving {name} from SSM: {e}")
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": get_ssm_parameter('/myapp/DB_NAME'),
+        "USER": get_ssm_parameter('/myapp/DB_USER'),
+        "PASSWORD": get_ssm_parameter('/myapp/DB_PASSWORD'),
+        "HOST": get_ssm_parameter('/myapp/DB_HOST'),
+        "PORT": get_ssm_parameter('/myapp/DB_PORT'),
+    }
+}
+
+
+
+
 
 # Fetch region and S3 bucket name from SSM
 AWS_REGION = get_ssm_parameter('/myapp/AWS_S3_REGION_NAME')
@@ -36,7 +55,6 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-# Allowed Hosts
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'your-eb-domain.elasticbeanstalk.com,yourcustomdomain.com').split(',')
+
 
 
