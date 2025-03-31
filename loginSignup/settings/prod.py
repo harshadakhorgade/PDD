@@ -3,7 +3,7 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 # Allowed Hosts
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'your-eb-domain.elasticbeanstalk.com,production.eba-e54mw4d2.us-west-2.elasticbeanstalk.com').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'your-eb-domain.elasticbeanstalk.com,production.eba-nmpz8iig.us-west-2.elasticbeanstalk.com').split(',')
 
 
 DEBUG = False
